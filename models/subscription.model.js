@@ -32,7 +32,6 @@ const subscriptionSchema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         required: true,
-        enum: ['credit_card', 'paypal', 'bank_transfer', 'crypto', 'other'], //enum was not added in this version and not the OG code
         trim: true,
     },
     status: {
@@ -48,11 +47,23 @@ const subscriptionSchema = new mongoose.Schema({
             message: 'Start date must be in the past',
         }
     },
+
+    // startDate: {
+    //     type: Date,
+    //     required: true,
+    //     validate: {
+    //         validator: function(value) {
+    //             return value >= new Date(new Date().setHours(0, 0, 0, 0));
+    //         },
+    //         message: 'Start date must not be in the past',
+    //     }
+    // },
     renewalDate: {
         type: Date,
-        required: true,
         validate: {
-            validator: (value) => value > this.startDate,
+            validator: function (value) {
+                return value > this.startDate;
+            },
             message: 'Renewal date must be after the start date',
         }
     },
@@ -68,7 +79,7 @@ const subscriptionSchema = new mongoose.Schema({
 
 // Next we create auto subscription renewal logic function (only if date missing)
 
-subscriptionSchema.pre('save', function(next){
+subscriptionSchema.pre('save', function(){
     if(!this.renewalDate){
         const renewalPeriods = {
             daily: 1,
@@ -84,11 +95,11 @@ subscriptionSchema.pre('save', function(next){
     }
 
     // Auto-update the status to expired if the renewal date is in the past
-    if(this.renewalDate < this.startDate){
+    if(this.renewalDate < new Date()){
         this.status = 'expired';
     }
-    next();
-})
+    // next();
+});
 
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
