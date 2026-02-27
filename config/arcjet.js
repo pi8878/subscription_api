@@ -17,7 +17,7 @@ const aj = arcjet({
       // Block all bots except the following
       allow: [
         "CATEGORY:SEARCH_ENGINE", // Google, Bing, etc
-      ],
+      ], 
     }),
     // Create a token bucket rate limit. Other algorithms are supported.
     tokenBucket({
