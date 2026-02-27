@@ -75,7 +75,7 @@ subscription_api/
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/subscription-api.git
+git clone https://github.com/pi8878/subscription-api.git
 cd subscription-api
 npm install
 ```
